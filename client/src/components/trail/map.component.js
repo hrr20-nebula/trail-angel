@@ -98,7 +98,6 @@ export default class TrailMap extends React.Component {
     this.state = {
       weather: {}
     }
-    // this.onRegionChange = this.onRegionChange.bind(this);
   }
 
   componentWillMount() {
@@ -107,18 +106,6 @@ export default class TrailMap extends React.Component {
       .then( (res) => {
         that.setState({ weather: res });
       });
-  }
-
-  // onRegionChange(region) {
-  //   this.setState( {region} );
-  // }
-
-  displayTemp() {
-    if(this.state.weather.currently === undefined) {
-      return <Text />;
-    } else {
-      return <Text> {this.state.weather.currently.temperature} </Text>
-    }
   }
 
   render() {

@@ -44,3 +44,6 @@ buck-out/
 \.buckd/
 android/app/libs
 *.keystore
+
+ios/trailangel.xcodeproj/project.pbxproj
+ios/trailangel/Info.plist
