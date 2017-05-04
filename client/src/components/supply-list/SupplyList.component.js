@@ -6,21 +6,16 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Image,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  NavigatorIOS,
   ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 import { bindActionCreators } from 'redux';
 import { connect  } from 'react-redux';
-
-import { routes } from '../../router';
-import googleApi from '../../api/google-api';
 import userActions from '../../actions/user-actions';
 
-import Login from '../../views/login';
 import colors from '..//style/colors';
 import dimensions from '..//style/dimensions';
 import trailAngelApi from '../../api/trailangel-api';
@@ -38,22 +33,23 @@ class SupplyList extends React.Component {
       inputText: '',
       supplies: [
         // This is the shape of a supply item element in the supplies array
-        //{name: 'Flashlight', isChecked: false}
+        //{name: 'Flashlight', isChecked: false},
+        //{name: 'Trail Mix', isChecked: false}
       ]
     }
 
   }
 
+  // Populate saved supply list if one exists
   componentDidMount() {
     return trailAngelApi.getSupplyItems(this.state.userId)
     .then((supplylist) => {
-      console.log(supplylist);
       this.setState({
         supplies: supplylist
       });
     })
     .catch((err) => {
-      console.log('error getting supply list', err);
+      console.error('error getting supply list', err);
     })
   }
 
@@ -66,45 +62,50 @@ class SupplyList extends React.Component {
     });
   }
 
+  // Handler for clicking on a checkbox icon
   _handleItemPress = (index, e) => {
     let updatedSupplies = this.state.supplies.slice();
+    // Toggle the isChecked property
     updatedSupplies[index].isChecked = !updatedSupplies[index].isChecked;
-    this.setState({
-      supplies: updatedSupplies
-    });
-    trailAngelApi.updateSupplyItem(
+    return trailAngelApi.updateSupplyItem(
       this.state.userId,
       updatedSupplies[index].name,
       updatedSupplies[index].isChecked)
     .then((res) => {
-      console.log('Successfully updated item', res);
+      this.setState({
+        supplies: updatedSupplies
+      });
     })
     .catch((err) => {
-      console.log('There was an error updating item', err);
-    })
-  }
-
-  _handleItemDelete = (index, e) => {
-    trailAngelApi.removeSupplyItem(this.state.userId, this.state.supplies[index].name);
-    let updatedSupplies = this.state.supplies.slice();
-    updatedSupplies.splice(index, 1);
-    this.setState({
-      supplies: updatedSupplies
+      console.error('There was an error updating checkbox', err);
     });
   }
 
+  // Handler for deleting an item from the supply list
+  _handleItemDelete = (index, e) => {
+    let updatedSupplies = this.state.supplies.slice();
+    updatedSupplies.splice(index, 1);
+    return trailAngelApi.removeSupplyItem(this.state.userId, this.state.supplies[index].name)
+    .then((res) => {
+      this.setState({
+        supplies: updatedSupplies
+      });
+    })
+    .catch((err) => {
+      console.error('There was an error deleting the item', err);
+    });
+  }
+
+  // Handler for submitting a supply item
   _handleSubmit = (e) => {
-    //console.log('Item to be added: ', e.nativeEvent.text);
-    //console.log('userId: ', this.state.userId);
     let updatedSupplies = this.state.supplies.slice();
     updatedSupplies.push({name: e.nativeEvent.text, isChecked: false});
-    this.setState({
+    return trailAngelApi.addSupplyItem(this.state.userId, e.nativeEvent.text)
+    .then((res) => {
+      this.setState({
         supplies: updatedSupplies,
         inputText: ''
       });
-    trailAngelApi.addSupplyItem(this.state.userId, e.nativeEvent.text)
-    .then((res) => {
-      //console.log('Successfully added the item to database', res);
     })
     .catch((err) => {
       console.error('Error adding item to database', err);
@@ -115,50 +116,23 @@ class SupplyList extends React.Component {
     const orientation = this.state.dimensions.width < this.state.dimensions.height ?
       'portrait' : 'landscape';
     let keyId = 0 // Reset unique key counter for SupplyListItem components
-    return (
-      <View style=
-              {{
-                marginTop: dimensions.navHeight(orientation),
-                width: dimensions.windowWidth(),
-                height: dimensions.windowHeight(),
-                //backgroundColor: colors.beige,
-                flexDirection: 'column',
-                alignItems: 'center'
-              }}
-            onLayout={this._onLayoutChange}
-      >
-        <TextInput style=
-                        {{
-                          marginTop: 20,
-                          paddingLeft: 10,
-                          height: 40,
-                          width: 200,
-                          alignSelf: 'center',
-                          borderColor: colors.midgray,
-                          borderWidth: 0.5,
-                          borderRadius: 5
-                        }}
-                    value={this.state.inputText}
-                    placeholder='Input supply list item'
-                    onChangeText={(text) => this.setState({inputText: text})}
-                    onSubmitEditing={this._handleSubmit.bind(this)}
-                    returnKeyType='done'
-                    maxLength={17}
-        />
-        <View style=
-                {{
-                  marginTop: 20,
-                  width: dimensions.windowWidth() - 14,
-                  flexWrap: 'wrap',
-                  alignItems: 'flex-start',
-                  flexDirection:'column',
-                  borderColor: colors.beige,
-                  borderStyle: 'solid',
-                  borderWidth: 2,
-                  borderRadius: 5
-                }}
-        >
 
+    return (
+      <View
+        style={styles.container}
+        marginTop={dimensions.navHeight(orientation)}
+        onLayout={this._onLayoutChange}
+      >
+        <TextInput
+          style={styles.textInput}
+          value={this.state.inputText}
+          placeholder='Input supply list item'
+          onChangeText={(text) => this.setState({inputText: text})}
+          onSubmitEditing={this._handleSubmit}
+          returnKeyType='done'
+          maxLength={17}
+        />
+        <View style={styles.list}>
           {
             this.state.supplies.map((item, index) => {
               return (
@@ -167,19 +141,17 @@ class SupplyList extends React.Component {
                   name={item.name}
                   isChecked={item.isChecked}
                   key={keyId++}
-                  onPress={this._handleItemPress.bind(this)}
-                  onDelete={this._handleItemDelete.bind(this)} />
+                  onPress={this._handleItemPress}
+                  onDelete={this._handleItemDelete}
+                />
               )
             })
           }
-
         </View>
       </View>
     );
   }
 };
-
-
 
 const mapStateToProps = function(state) {
   return {
@@ -198,70 +170,74 @@ export default connect(
   mapDispatchToProps
 )(SupplyList);
 
+
 const SupplyListItem = (props) => {
-  const CheckBoxIcon = props.isChecked ?  <Icon name='check-square'
-                                                size={24}
-                                                color='#000000'
-                                                style={{padding:10}}
-                                          />
-                                            :
-                                          <Icon name='square'
-                                                size={24}
-                                                color='#000000'
-                                                style={{padding:10}}
-                                          />;
+  const CheckBoxIcon = props.isChecked ?
+    <Icon name='check-square' style={styles.icon} /> :
+    <Icon name='square' style={styles.icon} />;
 
   return (
-    <View style=
-            {{
-              margin: 10,
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start',
-              flexDirection:'row',
-            }}
-    >
+    <View style={styles.listItem}>
       <TouchableWithoutFeedback onPress={props.onPress.bind(this, props.index)}>
         {CheckBoxIcon}
       </TouchableWithoutFeedback>
-      <Text style={{padding: 10, fontSize: 20}}>
-              {props.name}
-      </Text>
+      <Text style={styles.listItemText}> {props.name} </Text>
       <TouchableHighlight onPress={props.onDelete.bind(this, props.index)}>
-        <Icon name='times' size={24} color='#000000' style={{padding:10 }} />
+        <Icon name='times' style={styles.icon} />
       </TouchableHighlight>
     </View>
   );
 }
 
+
 const styles = StyleSheet.create({
-
-  separator: {
-    backgroundColor: colors.midgray,
-    height: StyleSheet.hairlineWidth,
-  },
-
-  menuContainer: {
+  // SupplyList styles
+  container: {
+    width: dimensions.windowWidth(),
+    height: dimensions.windowHeight(),
     flexDirection: 'column',
-    width: 300,
+    alignItems: 'center'
+  },
+
+  textInput: {
+    marginTop: 20,
+    paddingLeft: 10,
+    height: 40,
+    width: 200,
+    alignSelf: 'center',
+    borderColor: colors.midgray,
+    borderWidth: 0.5,
+    borderRadius: 5
+  },
+
+  list: {
+    marginTop: 20,
+    width: dimensions.windowWidth() - 14,
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    flexDirection:'column',
+    borderColor: colors.beige,
+    borderStyle: 'solid',
+    borderWidth: 2,
+    borderRadius: 5
+  },
+
+  // SupplyListItem styles
+  listItem: {
     margin: 10,
-    marginTop: 0
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    flexDirection:'row'
   },
 
-  menuItemContainer: {
-    flexDirection: 'row',
-    paddingLeft: 12,
-    paddingTop: 5,
-    paddingBottom: 5
+  listItemText: {
+    padding: 10,
+    fontSize: 20
   },
 
-  logoutText: {
-    fontSize: 14,
-    paddingLeft: 8
-  },
-
-  chevron: {
-    paddingTop: 4,
-    marginLeft: 8,
-    color: colors.lightgray
+  icon: {
+    padding:10,
+    fontSize:24,
+    color:'#000000'
   }
 });
