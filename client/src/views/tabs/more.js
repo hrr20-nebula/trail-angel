@@ -125,7 +125,7 @@ class More extends React.Component {
             <View style={{ flexDirection: 'column'}}>
               <Menu handleLogoutPress={this._handleLogoutPress.bind(this)}
                     handleSupplyListPress={this._handleSupplyListPress.bind(this)} />
-              <View style={{marginTop: 200}}><Logos orientation={orientation} /></View>
+              <View style={{marginTop: 185}}><Logos orientation={orientation} /></View>
             </View>
               :
             <View style={{ flexDirection: 'row' }}>
@@ -244,8 +244,8 @@ const styles = StyleSheet.create({
   menuItemContainer: {
     flexDirection: 'row',
     paddingLeft: 8,
-    paddingTop: 8,
-    paddingBottom: 8
+    paddingTop: 13,
+    paddingBottom: 13
   },
 
   iconView: {
