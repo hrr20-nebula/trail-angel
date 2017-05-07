@@ -3,6 +3,7 @@
 import React from 'react';
 import {
   View,
+  Image,
   Text,
   TextInput,
   StyleSheet,
@@ -118,7 +119,8 @@ class SupplyList extends React.Component {
     let keyId = 0 // Reset unique key counter for SupplyListItem components
 
     return (
-      <View
+      <Image
+        source={require('../../../img/nature-image.jpg')}
         style={styles.container}
         marginTop={dimensions.navHeight(orientation)}
         onLayout={this._onLayoutChange}
@@ -148,7 +150,7 @@ class SupplyList extends React.Component {
             })
           }
         </View>
-      </View>
+      </Image>
     );
   }
 };
@@ -172,6 +174,7 @@ export default connect(
 
 
 const SupplyListItem = (props) => {
+  // Specify empty or checked checkbox depending on if clicked
   const CheckBoxIcon = props.isChecked ?
     <Icon name='check-square' style={styles.icon} /> :
     <Icon name='square' style={styles.icon} />;
@@ -196,7 +199,13 @@ const styles = StyleSheet.create({
     width: dimensions.windowWidth(),
     height: dimensions.windowHeight(),
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0)',
+    resizeMode: 'stretch'
+  },
+
+  backgroundImage: {
+    flex: 1,
   },
 
   textInput: {
@@ -216,10 +225,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start',
     flexDirection:'column',
-    borderColor: colors.beige,
-    borderStyle: 'solid',
-    borderWidth: 2,
-    borderRadius: 5
+    borderRadius: 5,
+    backgroundColor: 'rgba(219, 216, 214, 0.5)'
   },
 
   // SupplyListItem styles
