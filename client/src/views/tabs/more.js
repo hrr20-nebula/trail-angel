@@ -102,6 +102,7 @@ class More extends React.Component {
                 {{
                   flexWrap: 'wrap',
                   alignItems: 'flex-start',
+                  justifyContent: 'space-between',
                   flexDirection:'row'
                 }}
         >
@@ -109,7 +110,7 @@ class More extends React.Component {
             source={{uri: profile.avatarUrl}}
             style={styles.avatar}
           />
-          <View style={{ margin: 10 }}>
+          <View style={{ margin: 25 }}>
             <Text style={styles.nickname}>{profile.nickname}</Text>
             <Text style={styles.hikeDistance}>Hiked: 350 km</Text>
             <Text>Location: {this.state.city}</Text>
@@ -121,10 +122,10 @@ class More extends React.Component {
         {/* this may cause problems later for tall devices */}
         <View style={{ height: 400 }}>
           {orientation === 'portrait' ?
-            <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'column'}}>
               <Menu handleLogoutPress={this._handleLogoutPress.bind(this)}
                     handleSupplyListPress={this._handleSupplyListPress.bind(this)} />
-              <Logos orientation={orientation}/>
+              <View style={{marginTop: 185}}><Logos orientation={orientation} /></View>
             </View>
               :
             <View style={{ flexDirection: 'row' }}>
@@ -163,9 +164,9 @@ const Menu = (props) => (
       underlayColor={colors.lightgray}
       onPress={props.handleSupplyListPress}>
       <View style={styles.menuItemContainer}>
-        <Icon name='list-ul' size={17} color={colors.lightgray} />
-        <Text style={styles.logoutText}>Supply List</Text>
-        <Icon style={styles.chevron} name='chevron-right' size={12} />
+        <View style={styles.iconView}><Icon name='list-ul' size={17} color={colors.lightgray} /></View>
+        <Text style={styles.menuItemText}>Supply List</Text>
+        <View style={styles.iconView}><Icon style={styles.chevron} name='chevron-right' size={12} /></View>
       </View>
     </TouchableHighlight>
     <View style={styles.separator} />
@@ -181,9 +182,9 @@ const Menu = (props) => (
                 )}
               }>
       <View style={styles.menuItemContainer}>
-        <Icon  name='cog' size={20} color={colors.lightgray} />
-        <Text style={styles.logoutText}>Settings</Text>
-        <Icon style={styles.chevron} name='chevron-right' size={12} />
+        <View style={styles.iconView}><Icon  name='cog' size={20} color={colors.lightgray} /></View>
+        <Text style={styles.menuItemText}>Settings</Text>
+        <View style={styles.iconView}><Icon style={styles.chevron} name='chevron-right' size={12} /></View>
       </View>
     </TouchableHighlight>
     <View style={styles.separator} />
@@ -191,9 +192,9 @@ const Menu = (props) => (
       underlayColor={colors.lightgray}
       onPress={props.handleLogoutPress}>
       <View style={styles.menuItemContainer}>
-        <Icon  name='sign-out' size={20} color={colors.lightgray} />
-        <Text style={styles.logoutText}>Log Out</Text>
-        <Icon style={styles.chevron} name='chevron-right' size={12} />
+        <View style={styles.iconView}><Icon  name='sign-out' size={20} color={colors.lightgray} /></View>
+        <Text style={styles.menuItemText}>Log Out</Text>
+        <View style={styles.iconView}><Icon style={styles.chevron} name='chevron-right' size={12} /></View>
       </View>
     </TouchableHighlight>
     <View style={styles.separator} />
@@ -214,8 +215,8 @@ const Logos = (props) => (
 
 const styles = StyleSheet.create({
   avatar: {
-    height: 130,
-    width: 130,
+    height: 140,
+    width: 140,
     borderRadius: 20,
     margin: 10
   },
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     color: colors.seafoam,
     fontSize: 20,
     fontWeight: '600',
-    textAlign: 'center',
+    //textAlign: 'center',
     lineHeight: 30
   },
 
@@ -235,26 +236,31 @@ const styles = StyleSheet.create({
 
   menuContainer: {
     flexDirection: 'column',
-    width: 300,
-    margin: 10,
+    width: 320,
+    //margin: 10,
     marginTop: 0
   },
 
   menuItemContainer: {
     flexDirection: 'row',
-    paddingLeft: 12,
-    paddingTop: 5,
-    paddingBottom: 5
+    paddingLeft: 8,
+    paddingTop: 13,
+    paddingBottom: 13
   },
 
-  logoutText: {
+  iconView: {
+    width: 30
+  },
+
+  menuItemText: {
     fontSize: 14,
-    paddingLeft: 8
+    paddingLeft: 8,
+    flex: 1
   },
 
   chevron: {
     paddingTop: 4,
-    marginLeft: 8,
+    paddingLeft: 10,
     color: colors.lightgray
   }
 });
