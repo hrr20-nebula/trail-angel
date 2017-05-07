@@ -125,7 +125,7 @@ class More extends React.Component {
             <View style={{ flexDirection: 'column'}}>
               <Menu handleLogoutPress={this._handleLogoutPress.bind(this)}
                     handleSupplyListPress={this._handleSupplyListPress.bind(this)} />
-              <View style={{marginTop: 185}}><Logos orientation={orientation} /></View>
+              <View style={{marginTop: 180}}><Logos orientation={orientation} /></View>
             </View>
               :
             <View style={{ flexDirection: 'row' }}>
@@ -160,6 +160,7 @@ export default connect(
 
 const Menu = (props) => (
   <View style={styles.menuContainer}>
+  <View style={styles.separator} />
     <TouchableHighlight
       underlayColor={colors.lightgray}
       onPress={props.handleSupplyListPress}>
