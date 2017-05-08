@@ -28,7 +28,8 @@ const lock = new Auth0Lock({
       secondaryButtonBackgroundColor: colors.midgray,
       credentialBoxBackgroundColor: '#FFFFFF',
       screenBackgroundColor: colors.beige,
-      iconImageName: '../../img/backpack-lock-icon.png'
+      // To-Do: Get custom icon for Auth0 lock working
+      //iconImageName: 'backpack-lock-icon.png'
     }
   }
 });
