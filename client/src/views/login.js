@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { routes } from '../router';
 import Index from './index';
 import colors from '../components/style/colors';
+import dimensions from '../components/style/dimensions';
 
 import Auth0Lock from 'react-native-lock';
 import config from '../../config';
@@ -160,26 +161,29 @@ class Login extends Component {
     return (
       this.props.state.userReducer.hasToken ?
 
-        <Text>...Logging In...</Text> :
+        <Image
+          source={require('../../img/nature-image.jpg')}
+          style={styles.container}
+          marginTop={dimensions.navHeight('portrait')}>
+          <Text>...Logging In...</Text>
+        </Image> :
 
-        <View style={styles.container}>
+        <Image
+          source={require('../../img/nature-image.jpg')}
+          style={styles.container}
+          marginTop={dimensions.navHeight('portrait')}>
           <View style={styles.messageBox}>
-            <Image
-              style={styles.badge}
-              source={require('../../img/backpack.png')}
-            />
-            <Text style={styles.title}>TrailAngel</Text>
-            <Text style={styles.subtitle}>
+            <Text style={styles.title}>
               Hike your heart out on your favorite trails.
             </Text>
+            <TouchableHighlight
+              style={styles.signInButton}
+              underlayColor={colors.lightgray}
+              onPress={this.onLogin.bind(this)}>
+              <Text>Log In</Text>
+            </TouchableHighlight>
           </View>
-          <TouchableHighlight
-            style={styles.signInButton}
-            underlayColor={colors.lightgray}
-            onPress={this.onLogin.bind(this)}>
-            <Text>Log In</Text>
-          </TouchableHighlight>
-        </View>
+        </Image>
     );
   }
 }
@@ -194,16 +198,18 @@ export default connect(mapStateToProps)(Login);
 
 const styles = StyleSheet.create({
   container: {
+    width: dimensions.windowWidth(),
+    height: dimensions.windowHeight(),
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.beige,
+    backgroundColor: 'rgba(0,0,0,0)',
+    resizeMode: 'stretch'
   },
 
   messageBox: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
 
   badge: {
@@ -213,19 +219,10 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 17,
+    fontSize: 18,
     textAlign: 'center',
-    marginTop: 8,
-  },
-
-  subtitle: {
-    fontSize: 17,
-    textAlign: 'center',
-    marginTop: 4,
-  },
-
-  welcome: {
-    color: 'white'
+    marginTop: 40,
+    marginBottom: 18
   },
 
   signInButton: {
